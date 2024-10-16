@@ -1,0 +1,131 @@
+Deploy de Aplicação WordPress na AWS com Docker, EFS, RDS e Load Balancer
+Este guia detalha como realizar a instalação, configuração e deploy de uma aplicação WordPress em uma instância EC2 usando Docker (ou Containerd), EFS para armazenamento de arquivos estáticos, RDS MySQL como banco de dados e um Classic Load Balancer para gerenciar o tráfego.
+
+Passo 1: Preparar a Instância EC2
+Criação da Instância EC2
+No AWS Console, crie uma nova instância EC2, de preferência utilizando Amazon Linux 2 como sistema operacional.
+
+Escolha uma sub-rede privada para garantir que a instância não tenha um IP público.
+
+Nas configurações de "User Data", insira o seguinte script para instalar e configurar o Docker automaticamente:
+
+bash
+Copiar código
+#!/bin/bash
+sudo yum update -y
+sudo amazon-linux-extras install docker -y
+sudo service docker start
+sudo usermod -a -G docker ec2-user
+Permissões da Instância
+Verifique se o Security Group da sua EC2 permite tráfego nas portas 80 ou 8080.
+Crie uma Role IAM para a sua EC2, concedendo permissões para acessar o EFS, RDS e Load Balancer.
+Passo 2: Configuração do Docker para Deploy do WordPress e MySQL
+Instalar Docker ou Containerd
+Após o boot da EC2, verifique se o Docker está rodando:
+
+bash
+Copiar código
+sudo systemctl status docker
+Criar o Docker Compose para WordPress e MySQL
+Conecte-se à sua instância EC2 via SSH.
+
+Crie um arquivo docker-compose.yml para configurar o WordPress e o banco de dados MySQL (usando o RDS):
+
+yaml
+Copiar código
+version: '3.1'
+
+services:
+  wordpress:
+    image: wordpress
+    ports:
+      - "80:80"
+    environment:
+      WORDPRESS_DB_HOST: your-rds-endpoint:3306
+      WORDPRESS_DB_USER: your-db-user
+      WORDPRESS_DB_PASSWORD: your-db-password
+      WORDPRESS_DB_NAME: your-db-name
+    volumes:
+      - /mnt/efs:/var/www/html/wp-content/uploads
+    networks:
+      - wp-network
+
+networks:
+  wp-network:
+    driver: bridge
+your-rds-endpoint: Endpoint do banco de dados RDS MySQL.
+your-db-user, your-db-password, your-db-name: Credenciais do banco de dados MySQL.
+Configurar RDS MySQL
+Crie um banco de dados RDS MySQL na AWS.
+Adicione as permissões de VPC Security Groups para permitir que a instância EC2 se conecte ao RDS.
+Rodar o Docker Compose
+Na sua instância EC2, navegue até o diretório onde está o arquivo docker-compose.yml e execute:
+
+bash
+Copiar código
+docker-compose up -d
+O WordPress será iniciado na porta 80 e estará conectado ao banco de dados RDS.
+
+Passo 3: Configurar o EFS para Armazenamento de Arquivos Estáticos
+Criar o EFS
+No AWS Console, crie um Elastic File System (EFS). Este será usado para armazenar arquivos estáticos do WordPress.
+Verifique se o EFS está configurado para ser acessado pela sua instância EC2.
+Montar o EFS na Instância EC2
+Adicione a montagem do EFS ao script user_data.sh ou execute os comandos manualmente na EC2:
+
+bash
+Copiar código
+sudo yum install -y amazon-efs-utils
+sudo mkdir -p /mnt/efs
+sudo mount -t efs fs-xxxxxxxx:/ /mnt/efs
+Substitua fs-xxxxxxxx pelo ID do seu EFS.
+
+Configurar o Docker Compose para Usar o EFS
+No arquivo docker-compose.yml, mapeie o diretório do EFS como volume para a pasta de uploads do WordPress:
+
+yaml
+Copiar código
+volumes:
+  - /mnt/efs:/var/www/html/wp-content/uploads
+Passo 4: Configuração do Load Balancer Classic
+Criar um Classic Load Balancer
+No AWS Console, vá até o serviço de Load Balancers e crie um Classic Load Balancer.
+Escolha a VPC onde sua instância EC2 está localizada e configure o Load Balancer para redirecionar o tráfego HTTP para a porta 80 da EC2.
+Configurar o Load Balancer
+Adicione a instância EC2 ao grupo de backends do Load Balancer.
+Certifique-se de que o Load Balancer esteja configurado para lidar com o tráfego de internet.
+Passo 5: Configuração de Git para Versionamento
+Iniciar um Repositório Git
+No diretório onde estão os arquivos docker-compose.yml, user_data.sh, etc., inicialize um repositório Git:
+
+bash
+Copiar código
+git init
+Adicionar Arquivos ao Git
+Adicione os arquivos ao repositório:
+
+bash
+Copiar código
+git add .
+git commit -m "Initial commit for WordPress deploy project"
+Criar um Repositório Remoto
+No GitHub ou GitLab, crie um novo repositório.
+
+Vincule seu repositório local ao repositório remoto:
+
+bash
+Copiar código
+git remote add origin https://github.com/your-username/your-repository.git
+git push -u origin master
+Passo 6: Documentação
+Instruções de Documentação
+Descrição do Projeto: Descreva o que foi configurado e os objetivos.
+Configuração do Docker e Containerd: Explique como o ambiente foi configurado via user_data.sh.
+Deploy do WordPress: Documente os passos para configurar o WordPress e conectar ao RDS.
+Configuração de EFS: Explique como o EFS foi integrado para armazenar arquivos estáticos.
+Configuração do Load Balancer: Detalhe o processo de configuração do Load Balancer e gerenciamento do tráfego.
+Testes: Descreva como acessar a aplicação WordPress e verificar que ela está funcionando corretamente.
+Teste Final
+Acesse o endereço DNS do Load Balancer. Se tudo estiver correto, você verá a página de login do WordPress.
+
+Esta estrutura é ideal para ser armazenada no GitHub, servindo como uma documentação clara e detalhada do seu projeto.
