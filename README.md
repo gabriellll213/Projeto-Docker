@@ -1,27 +1,24 @@
 ### Configuração de Infraestrutura AWS com EC2, RDS e EFS para Deploy de WordPress
 Este repositório fornece instruções para criar e configurar uma infraestrutura AWS utilizando uma instância EC2, banco de dados RDS, e sistema de arquivos EFS, com suporte a Docker e Docker Compose para hospedar uma aplicação WordPress.
 
-Índice
-Pré-requisitos
-Configuração do Ambiente
-1. Criar a Instância EC2
-2. Configurar o Banco de Dados RDS (MySQL)
-3. Configurar o Sistema de Arquivos EFS
-Configuração do Script de Inicialização
-Executando o Docker Compose
-Observações Importantes
-Pré-requisitos
+### Índice
+- Pré-requisitos
+- Configuração do Ambiente
+- 1. Criar a Instância EC2
+- 2. Configurar o Banco de Dados RDS (MySQL)
+- 3. Configurar o Sistema de Arquivos EFS
+- Configuração do Script de Inicialização
+- Executando o Docker Compose
+- Observações Importantes
+### Pré-requisitos
 Conta AWS com permissões para criação de instâncias EC2, RDS, e EFS.
 AWS CLI configurado.
 Chave SSH para acesso à instância EC2.
-Configuração do Ambiente
+### Configuração do Ambiente
 1. Criar a Instância EC2
 Acesse o Console da AWS, vá para EC2 > Instances e clique em Launch Instance.
-
 Escolha o AMI: Use uma imagem Ubuntu Server 20.04 LTS.
-
 Selecione o Tipo de Instância: t2.micro (grátis no nível de uso AWS Free Tier).
-
 Configurações de Rede: Escolha a VPC e o grupo de segurança apropriados. Assegure-se de que a porta 80 esteja aberta para acesso HTTP.
 
 User Data Script: No campo User data (opções avançadas), cole o script abaixo para configurar automaticamente a instância.
@@ -89,7 +86,7 @@ Nota: Substitua <SUA_SENHA> pela senha desejada para o banco de dados RDS.
 
 Finalize a Criação: Confirme as configurações e clique em Launch Instance.
 
-2. Configurar o Banco de Dados RDS (MySQL)
+### 2. Configurar o Banco de Dados RDS (MySQL)
 Acesse o Amazon RDS no Console da AWS e clique em Create Database.
 Selecione MySQL como o mecanismo de banco de dados.
 Configure:
