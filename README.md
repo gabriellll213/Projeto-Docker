@@ -87,37 +87,28 @@ Nota: Substitua <SUA_SENHA> pela senha desejada para o banco de dados RDS.
 Finalize a Criação: Confirme as configurações e clique em Launch Instance.
 
 ### 2. Configurar o Banco de Dados RDS (MySQL)
-Acesse o Amazon RDS no Console da AWS e clique em Create Database.
-Selecione MySQL como o mecanismo de banco de dados.
-Configure:
-Nome do banco de dados: exampledb
-Usuário: gabriel
-Senha: defina uma senha segura
-Na seção de conectividade, escolha a mesma VPC da instância EC2.
-Conclua a criação do banco de dados.
-3. Configurar o Sistema de Arquivos EFS
-Acesse o Amazon EFS e clique em Create file system.
-Configure o EFS para usar a mesma VPC da instância EC2.
-Após a criação, copie o ponto de montagem DNS para usá-lo no script (exemplo: fs-04a8493841bd310bd.efs.us-east-1.amazonaws.com).
-Configuração do Script de Inicialização
-O script configurará a instância EC2 para:
-
-Atualizar pacotes e instalar Docker e NFS.
-Montar o EFS na pasta /mnt/efs.
-Baixar e instalar o Docker Compose.
-Criar o arquivo docker-compose.yml com as configurações para o WordPress e MySQL.
-Iniciar os containers com Docker Compose.
-Executando o Docker Compose
+- Acesse o Amazon RDS no Console da AWS e clique em Create Database.
+- Selecione MySQL como o mecanismo de banco de dados.
+- Configure:
+- Nome do banco de dados: exampledb
+- Usuário: gabriel
+- Senha: defina uma senha segura
+- Na seção de conectividade, escolha a mesma VPC da instância EC2.
+  Conclua a criação do banco de dados.
+###3. Configurar o Sistema de Arquivos EFS
+- Acesse o Amazon EFS e clique em Create file system.
+- Configure o EFS para usar a mesma VPC da instância EC2.
+- Após a criação, copie o ponto de montagem DNS para usá-lo no script (exemplo: fs-04a8493841bd310bd.efs.us-east-1.amazonaws.com).
+### Configuração do Script de Inicialização
+- O script configurará a instância EC2 para:
+- Atualizar pacotes e instalar Docker e NFS.
+- Montar o EFS na pasta /mnt/efs.
+- Baixar e instalar o Docker Compose.
+- Criar o arquivo docker-compose.yml com as configurações para o WordPress e MySQL.
+- Iniciar os containers com Docker Compose.
+- Executando o Docker Compose
 Acesse a instância EC2 via SSH e verifique se os containers estão em execução com o comando:
 
-bash
-Copiar código
-docker ps
-Observações Importantes
-Segurança: Certifique-se de proteger credenciais sensíveis e restringir o acesso aos recursos.
-Portas de Acesso: Garanta que as portas usadas (80 para o WordPress) estejam abertas para permitir o tráfego.
-Monitoramento: Use o CloudWatch para monitorar a performance da instância e os logs de erro.
-Este setup agora está pronto para execução, permitindo a implementação de um site WordPress com armazenamento persistente no EFS e banco de dados gerenciado no RDS.
 
 
 
