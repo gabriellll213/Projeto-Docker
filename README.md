@@ -1,3 +1,5 @@
+![image](https://github.com/user-attachments/assets/fe54e693-0f90-4b6a-9ef4-b0787896e6dd)
+
 ### Configuração de Infraestrutura AWS com EC2, RDS e EFS para Deploy de WordPress
 Este repositório fornece instruções para criar e configurar uma infraestrutura AWS utilizando uma instância EC2, banco de dados RDS, e sistema de arquivos EFS, com suporte a Docker e Docker Compose para hospedar uma aplicação WordPress.
 
